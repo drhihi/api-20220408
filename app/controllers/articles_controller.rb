@@ -8,7 +8,7 @@ class ArticlesController < ApplicationController
 
   def show
     if @article.nil?
-      render json: {}, status: :not_found
+      render json: nil, status: :not_found
     else
       render json: @article, serializer: ArticleSerializer
     end
@@ -25,7 +25,7 @@ class ArticlesController < ApplicationController
 
   def update
     if @article.nil?
-      render json: {}, status: :not_found
+      render json: nil, status: :not_found
     elsif @article.update(post_params)
       render json: @article, serializer: ArticleSerializer, status: :created
     else
@@ -35,7 +35,7 @@ class ArticlesController < ApplicationController
 
   def destroy
     if @article.nil?
-      render json: {}, status: :not_found
+      render json: nil, status: :not_found
     elsif Article.destroy(@article.id)
       render json: @article, serializer: ArticleSerializer
     else
