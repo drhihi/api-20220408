@@ -3,21 +3,21 @@ class ArticlesController < ApplicationController
 
   def index
     articles = Article.all
-    render json: articles, each_serializer: ArticleSerializer
+    render json: articles
   end
 
   def show
-    if @article.nil?
-      render json: nil, status: :not_found
+    if @article.present?
+      render json: @article
     else
-      render json: @article, serializer: ArticleSerializer
+      render json: nil, status: :not_found
     end
   end
 
   def create
     article = Article.new(post_params)
     if article.save
-      render json: article, serializer: ArticleSerializer, status: :created
+      render json: article, status: :created
     else
       render json: article.errors, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class ArticlesController < ApplicationController
     if @article.nil?
       render json: nil, status: :not_found
     elsif @article.update(post_params)
-      render json: @article, serializer: ArticleSerializer, status: :created
+      render json: @article, status: :created
     else
       render json: @article.errors, status: :unprocessable_entity
     end
@@ -37,7 +37,7 @@ class ArticlesController < ApplicationController
     if @article.nil?
       render json: nil, status: :not_found
     elsif Article.destroy(@article.id)
-      render json: @article, serializer: ArticleSerializer
+      render json: @article, status: :no_content
     else
       render json: @article.errors, status: :conflict
     end
