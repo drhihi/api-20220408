@@ -2,31 +2,25 @@ class ArticlesController < ApplicationController
   before_action :set_article, only: %i[show update destroy]
 
   def index
-    articles = Article.all
-    render json: articles
+    @articles = Article.all
+    render json: @articles
   end
 
   def show
-    if @article.present?
-      render json: @article
-    else
-      render json: nil, status: :not_found
-    end
+    render json: @article
   end
 
   def create
-    article = Article.new(post_params)
-    if article.save
-      render json: article, status: :created
+    @article = Article.new(article_params)
+    if @article.save
+      render json: @article, status: :created
     else
-      render json: article.errors, status: :unprocessable_entity
+      render json: @article.errors, status: :unprocessable_entity
     end
   end
 
   def update
-    if @article.nil?
-      render json: nil, status: :not_found
-    elsif @article.update(post_params)
+    if @article.update(article_params)
       render json: @article, status: :created
     else
       render json: @article.errors, status: :unprocessable_entity
@@ -34,9 +28,7 @@ class ArticlesController < ApplicationController
   end
 
   def destroy
-    if @article.nil?
-      render json: nil, status: :not_found
-    elsif Article.destroy(@article.id)
+    if @article.destroy
       render json: @article, status: :no_content
     else
       render json: @article.errors, status: :conflict
@@ -45,12 +37,12 @@ class ArticlesController < ApplicationController
 
   private
 
-  def post_params
+  def article_params
     params.require(:article).permit(:title, :body)
   end
 
   def set_article
-    @article = Article.find_by(id: params[:id])
+    @article = Article.find(params[:id])
   end
 
 end
